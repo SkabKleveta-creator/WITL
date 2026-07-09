@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Warehousing in the Loop - Digital Facilitator Console v0.2.2</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brandlock">
+      <div class="kicker">Inside the System: TTRPG Engine</div>
+      <h1>Warehousing in the Loop</h1>
+      <p>Dock-to-Stock Collapse — Digital Facilitator Console v0.2.2</p>
+    </div>
+    <div class="badge">
+      <span>OFFLINE HTML</span>
+      <strong>Facilitator Console</strong>
+      <small>Not a video game. Not a load planner.</small>
+    </div>
+  </header>
+
+  <main class="app-shell">
+    <aside class="control-rail">
+      <section class="panel doctrine-panel">
+        <div class="section-title">Doctrine Lock</div>
+        <p id="doctrineText" class="doctrine"></p>
+        <p class="mini"><strong>Digital role:</strong> memory, timing, reveal control, logging, AAR. Humans decide.</p>
+        <button id="showGuideBtn" class="ghost full">Open Digital Guidebook</button>
+      </section>
+
+      <section class="panel context-panel">
+        <div class="section-title">Operating Context</div>
+        <select id="contextSelect" aria-label="Operating context"></select>
+        <p id="contextNote" class="mini note"></p>
+        <div class="context-stamp" id="contextStamp">SMU</div>
+      </section>
+
+      <section class="panel state-panel">
+        <div class="section-title">Run State</div>
+        <div class="state-grid">
+          <div><span>Round</span><strong id="roundLabel">1</strong></div>
+          <div><span>Mission Clock</span><strong id="clockLabel">5</strong></div>
+          <div><span>Insight</span><strong id="insightLabel">0/2</strong></div>
+        </div>
+        <div class="button-row">
+          <button id="earnInsightBtn">Earn Insight</button>
+          <button id="spendInsightBtn" class="warn">Spend Insight</button>
+        </div>
+        <div class="button-row">
+          <button id="prevRoundBtn" class="ghost">Back</button>
+          <button id="nextRoundBtn">End Round</button>
+        </div>
+        <button id="resetBtn" class="danger full">Reset Session</button>
+      </section>
+
+      <section class="panel track-panel">
+        <div class="section-title">Tracks</div>
+        <div id="trackList"></div>
+      </section>
+    </aside>
+
+    <section class="mainstage">
+      <section class="hero-card panel">
+        <div>
+          <div class="kicker">BLUF</div>
+          <h2>The console supports the wargame. It does not replace the table.</h2>
+          <p>Run the rhythm deliberately: <strong>Readback → Pause → Commit → Action → Resolve → Record/Validate → Final Decision → AAR.</strong></p>
+        </div>
+        <div class="crayon-eggs" aria-hidden="true">
+          <span>★</span><span>?</span><span>✓</span>
+        </div>
+      </section>
+
+      <section class="panel warehouse-wrap">
+        <div class="section-head">
+          <div>
+            <div class="section-title">Warehouse Floor</div>
+            <h2 id="warehouseTitle">SMU Warehouse View</h2>
+          </div>
+          <div class="visual-note" id="visualCue"></div>
+        </div>
+        <div class="warehouse-scene">
+          <div class="aisle-label">FORKLIFT LANE — CONTROLLED MOVEMENT</div>
+          <div id="warehouseBoard" class="warehouse-board"></div>
+          <div class="floor-details">
+            <span class="legend-dot visible"></span>Visible problem
+            <span class="legend-dot revealed"></span>Revealed fault
+            <span class="legend-dot validated"></span>Validated fault
+            <span class="legend-dot container"></span>Virtual container hook
+          </div>
+        </div>
+      </section>
+
+      <section class="two-col">
+        <section class="panel">
+          <div class="section-title">Floor Readback</div>
+          <div id="pressureCard" class="pressure-card"></div>
+          <div id="readbackText" class="readback-box"></div>
+          <div class="button-row">
+            <button id="timer60Btn">Start 60s Pause</button>
+            <button id="timer90Btn">Start 90s Pause</button>
+            <button id="stopTimerBtn" class="ghost">Stop</button>
+          </div>
+          <div id="timerLabel" class="timer-label">Pause timer: idle</div>
+        </section>
+
+        <section class="panel">
+          <div class="section-title">Processing Pause</div>
+          <p class="mini">Answer at least two. Run the timer, then record one specific assumption, risk, or proof requirement to earn Insight.</p>
+          <div class="prompt-list">
+            <span>What do we know?</span>
+            <span>What are we assuming?</span>
+            <span>What could hurt safety, evidence, or people?</span>
+            <span>What would prove this worked?</span>
+            <span>Who needs to understand the next action?</span>
+          </div>
+          <textarea id="pauseNotes" placeholder="Record the team’s assumption, risk, or proof requirement..."></textarea>
+          <div class="check-grid">
+            <label><input id="pauseSkipped" type="checkbox"> Team skipped / rushed pause</label>
+            <label><input id="safetyCarve" type="checkbox"> Safety carve-out applies</label>
+          </div>
+        </section>
+      </section>
+
+      <section class="panel action-panel">
+        <div class="section-title">Commit Statement and Action</div>
+        <div class="commit-line">
+          <input id="commitX" placeholder="We are doing X..." />
+          <input id="commitY" placeholder="because Y..." />
+          <input id="commitZ" placeholder="We will know it worked when Z..." />
+        </div>
+        <div id="actionButtons" class="action-grid"></div>
+        <div id="resolutionBox" class="resolution-box">Select an action to show the facilitator resolution row.</div>
+        <div class="resolution-controls">
+          <button id="applyDefaultBtn">Apply Default</button>
+          <button id="applyUpgradeBtn">Apply Upgrade</button>
+          <button id="markFalseGreenBtn" class="warn">Mark False Green / Risk</button>
+          <button id="recordCommitBtn" class="ghost">Record Commit</button>
+        </div>
+      </section>
+
+      <section class="two-col">
+        <section class="panel">
+          <div class="section-title">Ground Truth Brief</div>
+          <p class="mini">Facilitator eyes only. Reveal from this brief. Do not invent warehouse facts live.</p>
+          <div id="faultList" class="fault-list"></div>
+        </section>
+
+        <section class="panel">
+          <div class="section-title">Virtual Containerization Board</div>
+          <p class="mini">Non-scoring planning hooks for SMU, MRE/Class I, Initial Issue, Embark, and Prepositioning. No cube/weight math in this build.</p>
+          <div id="containerPalette" class="container-palette"></div>
+          <div class="container-editor">
+            <input id="containerName" placeholder="Container/load name e.g., ISO-1 / MRE Block A" />
+            <select id="containerType"></select>
+            <input id="containerContents" placeholder="Planned contents / issue lane / risk note" />
+            <button id="addContainerBtn">Add Virtual Container</button>
+          </div>
+          <div id="containerList" class="container-list"></div>
+        </section>
+      </section>
+
+      <section class="panel final-panel">
+        <div class="section-title">Final Decision Phase</div>
+        <p>After Round 5’s Record / Validate phase, run one final 60-second Decision Pause. No new pressure enters. No action is taken.</p>
+        <div class="final-grid">
+          <select id="finalDecision">
+            <option value="">Select final decision...</option>
+            <option value="Ship with evidence">Ship with evidence</option>
+            <option value="Hold with documented risk">Hold with documented risk</option>
+            <option value="Ship without proof and accept false-win risk">Ship without proof and accept false-win risk</option>
+          </select>
+          <button id="assessBtn">Assess Outcome</button>
+        </div>
+        <textarea id="finalEvidence" placeholder="State evidence or documented risk here. Unwritten intent is not documentation."></textarea>
+        <div id="outcomeBox" class="outcome-box"></div>
+      </section>
+
+      <section class="panel aar-panel">
+        <div class="section-title">Round Log / AAR Capture</div>
+        <textarea id="roundLog" placeholder="System notes and facilitator-entered evidence appear here. Add human observations as needed."></textarea>
+        <div class="aar-questions">
+          <label>Real constraint<input id="aar1" placeholder="What was the real constraint?" /></label>
+          <label>Pause effect<input id="aar2" placeholder="Where did the Pause change a decision?" /></label>
+          <label>Doctrine to preserve<input id="aar3" placeholder="What would we preserve as doctrine?" /></label>
+        </div>
+        <div class="button-row">
+          <button id="addManualNoteBtn">Add Manual Note</button>
+          <button id="exportBtn">Download AAR Markdown</button>
+          <button id="copyBtn" class="ghost">Copy AAR</button>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <dialog id="guideDialog">
+    <form method="dialog">
+      <button class="close-dialog">Close</button>
+    </form>
+    <h2>Digital Guidebook Guardrails</h2>
+    <p><strong>What this is:</strong> an offline facilitator console for a tabletop support wargame.</p>
+    <p><strong>What this is not:</strong> a warehouse video game, logistics platform, load calculator, AI decision system, or simulator claiming operational fidelity.</p>
+    <ul>
+      <li>The v0.2.2 tabletop packet remains the doctrine source.</li>
+      <li>The console cannot invent facts or recommend moves.</li>
+      <li>Provisional and validated gains remain separate.</li>
+      <li>Ground truth reveals remain facilitator-controlled.</li>
+      <li>Containerization is a parked planning lens until tested.</li>
+    </ul>
+  </dialog>
+
+  <footer>
+    <span>Professional warehouse/cartoon visual treatment with crayon Easter eggs.</span>
+    <span>Use no sensitive operational data. This is a training/prototyping artifact.</span>
+  </footer>
+
+  <script src="scenario_v0_2_2.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
