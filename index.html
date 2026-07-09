@@ -1,221 +1,41 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Warehousing in the Loop - Digital Facilitator Console v0.2.2</title>
-  <link rel="stylesheet" href="styles.css" />
-</head>
-<body>
-  <header class="topbar">
-    <div class="brandlock">
-      <div class="kicker">Inside the System: TTRPG Engine</div>
-      <h1>Warehousing in the Loop</h1>
-      <p>Dock-to-Stock Collapse — Digital Facilitator Console v0.2.2</p>
-    </div>
-    <div class="badge">
-      <span>OFFLINE HTML</span>
-      <strong>Facilitator Console</strong>
-      <small>Not a video game. Not a load planner.</small>
-    </div>
-  </header>
-
-  <main class="app-shell">
-    <aside class="control-rail">
-      <section class="panel doctrine-panel">
-        <div class="section-title">Doctrine Lock</div>
-        <p id="doctrineText" class="doctrine"></p>
-        <p class="mini"><strong>Digital role:</strong> memory, timing, reveal control, logging, AAR. Humans decide.</p>
-        <button id="showGuideBtn" class="ghost full">Open Digital Guidebook</button>
-      </section>
-
-      <section class="panel context-panel">
-        <div class="section-title">Operating Context</div>
-        <select id="contextSelect" aria-label="Operating context"></select>
-        <p id="contextNote" class="mini note"></p>
-        <div class="context-stamp" id="contextStamp">SMU</div>
-      </section>
-
-      <section class="panel state-panel">
-        <div class="section-title">Run State</div>
-        <div class="state-grid">
-          <div><span>Round</span><strong id="roundLabel">1</strong></div>
-          <div><span>Mission Clock</span><strong id="clockLabel">5</strong></div>
-          <div><span>Insight</span><strong id="insightLabel">0/2</strong></div>
-        </div>
-        <div class="button-row">
-          <button id="earnInsightBtn">Earn Insight</button>
-          <button id="spendInsightBtn" class="warn">Spend Insight</button>
-        </div>
-        <div class="button-row">
-          <button id="prevRoundBtn" class="ghost">Back</button>
-          <button id="nextRoundBtn">End Round</button>
-        </div>
-        <button id="resetBtn" class="danger full">Reset Session</button>
-      </section>
-
-      <section class="panel track-panel">
-        <div class="section-title">Tracks</div>
-        <div id="trackList"></div>
-      </section>
-    </aside>
-
-    <section class="mainstage">
-      <section class="hero-card panel">
-        <div>
-          <div class="kicker">BLUF</div>
-          <h2>The console supports the wargame. It does not replace the table.</h2>
-          <p>Run the rhythm deliberately: <strong>Readback → Pause → Commit → Action → Resolve → Record/Validate → Final Decision → AAR.</strong></p>
-        </div>
-        <div class="crayon-eggs" aria-hidden="true">
-          <span>★</span><span>?</span><span>✓</span>
-        </div>
-      </section>
-
-      <section class="panel warehouse-wrap">
-        <div class="section-head">
-          <div>
-            <div class="section-title">Warehouse Floor</div>
-            <h2 id="warehouseTitle">SMU Warehouse View</h2>
-          </div>
-          <div class="visual-note" id="visualCue"></div>
-        </div>
-        <div class="warehouse-scene">
-          <div class="aisle-label">FORKLIFT LANE — CONTROLLED MOVEMENT</div>
-          <div id="warehouseBoard" class="warehouse-board"></div>
-          <div class="floor-details">
-            <span class="legend-dot visible"></span>Visible problem
-            <span class="legend-dot revealed"></span>Revealed fault
-            <span class="legend-dot validated"></span>Validated fault
-            <span class="legend-dot container"></span>Virtual container hook
-          </div>
-        </div>
-      </section>
-
-      <section class="two-col">
-        <section class="panel">
-          <div class="section-title">Floor Readback</div>
-          <div id="pressureCard" class="pressure-card"></div>
-          <div id="readbackText" class="readback-box"></div>
-          <div class="button-row">
-            <button id="timer60Btn">Start 60s Pause</button>
-            <button id="timer90Btn">Start 90s Pause</button>
-            <button id="stopTimerBtn" class="ghost">Stop</button>
-          </div>
-          <div id="timerLabel" class="timer-label">Pause timer: idle</div>
-        </section>
-
-        <section class="panel">
-          <div class="section-title">Processing Pause</div>
-          <p class="mini">Answer at least two. Run the timer, then record one specific assumption, risk, or proof requirement to earn Insight.</p>
-          <div class="prompt-list">
-            <span>What do we know?</span>
-            <span>What are we assuming?</span>
-            <span>What could hurt safety, evidence, or people?</span>
-            <span>What would prove this worked?</span>
-            <span>Who needs to understand the next action?</span>
-          </div>
-          <textarea id="pauseNotes" placeholder="Record the team’s assumption, risk, or proof requirement..."></textarea>
-          <div class="check-grid">
-            <label><input id="pauseSkipped" type="checkbox"> Team skipped / rushed pause</label>
-            <label><input id="safetyCarve" type="checkbox"> Safety carve-out applies</label>
-          </div>
-        </section>
-      </section>
-
-      <section class="panel action-panel">
-        <div class="section-title">Commit Statement and Action</div>
-        <div class="commit-line">
-          <input id="commitX" placeholder="We are doing X..." />
-          <input id="commitY" placeholder="because Y..." />
-          <input id="commitZ" placeholder="We will know it worked when Z..." />
-        </div>
-        <div id="actionButtons" class="action-grid"></div>
-        <div id="resolutionBox" class="resolution-box">Select an action to show the facilitator resolution row.</div>
-        <div class="resolution-controls">
-          <button id="applyDefaultBtn">Apply Default</button>
-          <button id="applyUpgradeBtn">Apply Upgrade</button>
-          <button id="markFalseGreenBtn" class="warn">Mark False Green / Risk</button>
-          <button id="recordCommitBtn" class="ghost">Record Commit</button>
-        </div>
-      </section>
-
-      <section class="two-col">
-        <section class="panel">
-          <div class="section-title">Ground Truth Brief</div>
-          <p class="mini">Facilitator eyes only. Reveal from this brief. Do not invent warehouse facts live.</p>
-          <div id="faultList" class="fault-list"></div>
-        </section>
-
-        <section class="panel">
-          <div class="section-title">Virtual Containerization Board</div>
-          <p class="mini">Non-scoring planning hooks for SMU, MRE/Class I, Initial Issue, Embark, and Prepositioning. No cube/weight math in this build.</p>
-          <div id="containerPalette" class="container-palette"></div>
-          <div class="container-editor">
-            <input id="containerName" placeholder="Container/load name e.g., ISO-1 / MRE Block A" />
-            <select id="containerType"></select>
-            <input id="containerContents" placeholder="Planned contents / issue lane / risk note" />
-            <button id="addContainerBtn">Add Virtual Container</button>
-          </div>
-          <div id="containerList" class="container-list"></div>
-        </section>
-      </section>
-
-      <section class="panel final-panel">
-        <div class="section-title">Final Decision Phase</div>
-        <p>After Round 5’s Record / Validate phase, run one final 60-second Decision Pause. No new pressure enters. No action is taken.</p>
-        <div class="final-grid">
-          <select id="finalDecision">
-            <option value="">Select final decision...</option>
-            <option value="Ship with evidence">Ship with evidence</option>
-            <option value="Hold with documented risk">Hold with documented risk</option>
-            <option value="Ship without proof and accept false-win risk">Ship without proof and accept false-win risk</option>
-          </select>
-          <button id="assessBtn">Assess Outcome</button>
-        </div>
-        <textarea id="finalEvidence" placeholder="State evidence or documented risk here. Unwritten intent is not documentation."></textarea>
-        <div id="outcomeBox" class="outcome-box"></div>
-      </section>
-
-      <section class="panel aar-panel">
-        <div class="section-title">Round Log / AAR Capture</div>
-        <textarea id="roundLog" placeholder="System notes and facilitator-entered evidence appear here. Add human observations as needed."></textarea>
-        <div class="aar-questions">
-          <label>Real constraint<input id="aar1" placeholder="What was the real constraint?" /></label>
-          <label>Pause effect<input id="aar2" placeholder="Where did the Pause change a decision?" /></label>
-          <label>Doctrine to preserve<input id="aar3" placeholder="What would we preserve as doctrine?" /></label>
-        </div>
-        <div class="button-row">
-          <button id="addManualNoteBtn">Add Manual Note</button>
-          <button id="exportBtn">Download AAR Markdown</button>
-          <button id="copyBtn" class="ghost">Copy AAR</button>
-        </div>
-      </section>
-    </section>
-  </main>
-
-  <dialog id="guideDialog">
-    <form method="dialog">
-      <button class="close-dialog">Close</button>
-    </form>
-    <h2>Digital Guidebook Guardrails</h2>
-    <p><strong>What this is:</strong> an offline facilitator console for a tabletop support wargame.</p>
-    <p><strong>What this is not:</strong> a warehouse video game, logistics platform, load calculator, AI decision system, or simulator claiming operational fidelity.</p>
-    <ul>
-      <li>The v0.2.2 tabletop packet remains the doctrine source.</li>
-      <li>The console cannot invent facts or recommend moves.</li>
-      <li>Provisional and validated gains remain separate.</li>
-      <li>Ground truth reveals remain facilitator-controlled.</li>
-      <li>Containerization is a parked planning lens until tested.</li>
-    </ul>
-  </dialog>
-
-  <footer>
-    <span>Professional warehouse/cartoon visual treatment with crayon Easter eggs.</span>
-    <span>Use no sensitive operational data. This is a training/prototyping artifact.</span>
-  </footer>
-
-  <script src="scenario_v0_2_2.js"></script>
-  <script src="app.js"></script>
-</body>
-</html>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>WITL Digital v0.2.5</title><style>
+:root{--bg:#111918;--panel:#f7f0df;--ink:#202624;--muted:#66716d;--line:#c9bea7;--blue:#285d8f;--green:#2f8f52;--amber:#d99a2b;--red:#b64c42;--r:16px;--shadow:0 14px 34px #0005}*{box-sizing:border-box}body{margin:0;background:linear-gradient(135deg,#111918,#27332f);font-family:system-ui,-apple-system,Segoe UI,Arial,sans-serif;color:var(--ink)}header{position:sticky;top:0;z-index:10;background:#101816f5;color:white;border-bottom:3px solid #ffffff22;padding:14px 20px;display:flex;gap:14px;justify-content:space-between;align-items:center}.k{font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:#f4c65e;font-weight:900}h1{font-size:24px;margin:0}header p{margin:4px 0 0;color:#dbe4df}.pills{display:flex;gap:8px;flex-wrap:wrap}.pill{border:2px solid #ffffff33;border-radius:999px;padding:7px 10px;background:#ffffff12;font-weight:800}.pill b{color:#f4c65e}.wrap{max-width:1480px;margin:0 auto;padding:18px;display:grid;grid-template-columns:1fr 370px;gap:18px}.main,.rail{display:flex;flex-direction:column;gap:16px}.card{background:var(--panel);border:3px solid #252a23;border-radius:var(--r);box-shadow:var(--shadow);padding:16px}.title{font-size:12px;text-transform:uppercase;letter-spacing:.12em;font-weight:950;color:#79491f;margin-bottom:8px}.doctrine{background:#fff8d6;border-left:7px solid #f3be3d;border-radius:12px;padding:12px;font-weight:850}.friendly{background:#e6f3e8;border-left:7px solid var(--green);border-radius:12px;padding:12px;margin-top:10px;line-height:1.4}.steps{display:grid;grid-template-columns:repeat(8,1fr);gap:7px}.step{border:2px solid #8e8674;border-radius:11px;background:#fffaf0;padding:8px 5px;text-align:center;font-size:12px;font-weight:900;color:#535b56}.step.on{background:#153f60;color:#fff;border-color:#f3be3d}.step.done{background:#dfeee1;color:#1f4f2d;border-color:var(--green)}.phase{min-height:245px}.head{display:flex;justify-content:space-between;gap:12px}.badge{background:#24342f;color:#fff;border:3px solid #f3be3d;border-radius:14px;padding:9px 12px;font-weight:950;min-width:74px;text-align:center}.muted{color:var(--muted);font-size:14px;line-height:1.45}.btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}button{border:2px solid #222820;border-radius:12px;background:var(--blue);color:white;padding:10px 12px;font-weight:900;cursor:pointer}button:hover{filter:brightness(1.06);transform:translateY(-1px)}button.secondary{background:#eef1eb;color:#24342f;border-color:#929b91}button.warn{background:var(--amber);color:#24180b}button.danger{background:var(--red)}button.good{background:var(--green)}input,textarea,select{width:100%;border:2px solid #817967;border-radius:12px;padding:10px;background:#fffdf7;color:var(--ink);font:inherit}textarea{min-height:92px;resize:vertical}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.choices{display:grid;grid-template-columns:repeat(5,1fr);gap:9px}.choice{background:#fffdf7;color:#182520;border:3px solid #817967;padding:13px 9px}.choice.on{background:#173e60;color:white;border-color:#f3be3d}.warehouse{background:#35413e;border:4px solid #151918;border-radius:20px;padding:15px;box-shadow:inset 0 0 0 5px #ffffff0d}.lane{text-align:center;background:#ffc238;color:#1f1a0f;border:3px solid #1d1d16;border-radius:999px;padding:7px;margin-bottom:12px;font-weight:950;letter-spacing:.05em}.zones{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.zone{min-height:155px;background:linear-gradient(180deg,#f2e9d1,#d9ceb4);border:3px solid #181d1b;border-radius:15px;padding:12px;cursor:pointer;position:relative}.zone:hover{transform:translateY(-2px);filter:brightness(1.03)}.zone.sel{outline:5px solid #f3be3d}.num{position:absolute;top:8px;right:9px;width:28px;height:28px;display:grid;place-items:center;border-radius:50%;background:#24342f;color:white;font-weight:950}.zone h3{font-size:16px;margin:0 35px 4px 0}.detail{font-size:12px;color:#4d554f;line-height:1.3;margin:6px 0}.heat{height:12px;background:#e6decb;border:1px solid #9a907c;border-radius:999px;overflow:hidden;margin:8px 0}.heat span{display:block;height:100%;background:linear-gradient(90deg,#a9c9e8,#f3c24c,#c6534b)}.tags{display:flex;gap:5px;flex-wrap:wrap}.tag{font-size:11px;font-weight:950;border:2px solid #2b2b22;border-radius:999px;padding:3px 7px;background:white}.prov{background:#fff0cc}.val{background:#ddf3df}.risk{background:#f8d9d5}.rev{background:#dceefa}.focus{background:#fffdf7;border:2px solid #8b8372;border-radius:14px;padding:12px}.row{display:grid;grid-template-columns:1fr auto;gap:8px;border-bottom:1px solid #d7cfbb;padding:7px 0}.track{margin:8px 0}.track h4{display:flex;justify-content:space-between;margin:0 0 4px}.bar{height:12px;background:#e3dccb;border:1px solid #9a907c;border-radius:999px;overflow:hidden}.bar span{display:block;height:100%;background:var(--green)}.bar.load span{background:linear-gradient(90deg,var(--green),var(--amber),var(--red))}.log{max-height:280px;overflow:auto;background:#fffdf7;border:2px solid #8b8372;border-radius:14px;padding:10px;font-size:13px}.event{border-bottom:1px solid #ddd1bb;padding:8px 0}.event strong{color:#173e60}.drawer{border:2px dashed #8b8372;border-radius:14px;padding:10px;background:#fffaf0;margin-top:10px}details summary{cursor:pointer;font-weight:950;color:#173e60}.timer{font-size:31px;font-weight:1000;color:#173e60;background:#fffdf7;border:3px solid #173e60;border-radius:16px;display:inline-block;padding:8px 14px;margin:7px 0}.small{font-size:12px;color:#68716d}@media(max-width:1050px){.wrap{grid-template-columns:1fr}.steps{grid-template-columns:repeat(4,1fr)}.zones,.choices,.grid2,.grid3{grid-template-columns:1fr}header{align-items:flex-start;flex-direction:column}.rail{order:-1}}
+</style></head><body><header><div><div class="k">Inside the System / Warehousing in the Loop</div><h1>Guided Warehouse Activity Review</h1><p>v0.2.5 — event history + warehouse activity visualization</p></div><div class="pills"><span class="pill">Round <b id="rTop">1</b></span><span class="pill">Clock <b id="cTop">5</b></span><span class="pill">Step <b id="sTop">Readback</b></span><span class="pill">Insight <b id="iTop">0</b></span></div></header><div class="wrap"><main class="main"><section class="card"><div class="doctrine">Humans need time and context before the next right action. This console records what the team looked at, what it believed, what it proved, and what stayed risky.</div><div class="friendly"><b>Supply Marine framing:</b> this is not a blame tool. The point is to show where the process, data, timing, and handoffs make good Marines work harder than they should.</div></section><section class="card"><div class="title">Guided run</div><div id="steps" class="steps"></div></section><section class="card phase"><div class="head"><div><div class="title" id="pk">Step 1</div><h2 id="pt">Readback</h2><p class="muted" id="ph"></p></div><div class="badge" id="pb">1 / 8</div></div><div id="body"></div><div class="btns" id="buttons"></div></section><section class="card"><div class="title">Warehouse activity board</div><div class="warehouse"><div class="lane">FORKLIFT LANE — CONTROLLED MOVEMENT / LOOK BEFORE YOU PUSH</div><div id="zones" class="zones"></div></div></section></main><aside class="rail"><section class="card"><div class="title">Current focus</div><div id="focus" class="focus"></div></section><section class="card"><div class="title">Tracks</div><div id="tracks"></div></section><section class="card"><div class="title">Activity summary</div><div id="sum"></div></section><section class="card"><div class="title">Facilitator drawers</div><details><summary>Ground truth / controlled reveals</summary><div id="faults" class="drawer"></div></details><details><summary>Recent event history</summary><div id="log" class="log"></div></details><details><summary>Guardrails</summary><div class="drawer small">No AI advice. No generated facts. No load math. No avatar or movement loop. Warehouse activity comes from facilitator-recorded events only.</div></details></section><section class="card"><button class="danger" onclick="resetRun()">Reset local run</button></section></aside></div><script>
+const steps=['Readback','Pause','Commit','Action','Resolve','Record','Final','AAR'];
+const zones=[['receiving','Receiving Dock','Backlog visible','Inbound pallets, staged overflow, dock pressure.'],['qa','QA / Hold','Status unclear','Holds, inspection, damage, release proof.'],['storage','Bulk Storage','Unknown condition','Racks, blocked aisles, put-away assumptions.'],['pick','Pick Face','Priority shortage','Forward pick, WMS count, physical count.'],['pack','Pack / Ship','Cutoff pressure','Labels, outbound staging, shipment evidence.'],['rework','Rework Bench','Quiet / unknown','Label fixes, kit rebuild, exception handling.']].map((x,i)=>({id:x[0],name:x[1],visible:x[2],detail:x[3],n:i+1}));
+const pressures=[['Surge at receiving','Inbound surge hit this morning. Pick Face shows a priority shortage. Pack / Ship is near cutoff.','Rushing before understanding can create false green.'],['Dashboard looks green','The system says the queue is healthy, but the floor does not look healthy.','Trusting the screen alone can hide the real constraint.'],['Worker confusion','People are following different versions of the process.','Calling it noncompliance may increase load and miss the handoff failure.'],['Clean numbers, dirty floor','Reports look better than the physical process.','Declaring recovery without validation creates false success.'],['Leadership wants movement','The table is pressured to show movement before proof.','Expedite without evidence may protect the clock but damage trust.']];
+const actions={observe:'Observe: find what you do not know.',stabilize:'Stabilize: reduce immediate risk.',route:'Route: move work or attention to a better path.',exception:'Exception: protect or push with documented risk.',validate:'Validate: prove what you think you fixed.'};
+const faults={pick:'Ghost inventory: WMS shows 40, physical count is 6. Reveal only when earned.',receiving:'Staging used as unofficial storage. Some backlog is old overflow.',storage:'Old process still followed. Workers were never briefed consistently.'};
+let st={round:1,clock:5,step:0,insight:0,focus:'receiving',pause:false,action:'',commit:{x:'',y:'',z:''},finalDecision:'',finalEvidence:'',events:[],faultState:{}};
+let tr={flow:{name:'Flow',v:2,p:0},trust:{name:'Trust',v:3,p:0},safety:{name:'Safety',v:4,p:0},load:{name:'Human Load',v:3,p:0}};
+function $(id){return document.getElementById(id)}function zn(id){return (zones.find(z=>z.id==id)||{}).name||id}function ze(id){return st.events.filter(e=>e.zone==id)}function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function add(type,zone,detail,status='note',track=''){st.events.push({round:st.round,step:steps[st.step],zone,type,detail,status,track,time:new Date().toLocaleTimeString()});if(status==='provisional')tr.flow.p++;if(status==='validated')tr.trust.v=Math.min(6,tr.trust.v+1);if(status==='risk')tr.load.v=Math.min(6,tr.load.v+1);render()}
+function render(){topbar();renderSteps();renderPhase();renderZones();renderFocus();renderTracks();renderSummary();renderFaults();renderLog()}
+function topbar(){$('rTop').textContent=st.round;$('cTop').textContent=st.clock;$('sTop').textContent=steps[st.step];$('iTop').textContent=st.insight}
+function renderSteps(){$('steps').innerHTML=steps.map((s,i)=>`<div class="step ${i==st.step?'on':i<st.step?'done':''}">${i+1}. ${s}</div>`).join('')}
+function help(i){return ['Read what changed before acting.','Give the team time to understand the problem.','Say the action and proof standard in plain language.','Pick one plain-language action.','Record what happened without pretending unproven gains are real.','Check what changed, what is proved, and what remains open.','Decide with evidence or documented risk.','Capture what the run taught.'][i]}
+function renderPhase(){let p=pressures[st.round-1],z=zones.find(x=>x.id==st.focus),body='',b='';
+ if(st.step==0){body=`<h3>${p[0]}</h3><p>${p[1]}</p><p class="muted"><b>Risk if rushed:</b> ${p[2]}</p><div class="focus"><b>Current focus:</b> ${z.name}<br>${z.visible}</div>`;b=btn('Start Processing Pause','next()')}
+ if(st.step==1){body=`<p class="muted">What do we know, what are we assuming, and what would prove this worked?</p><div class="timer" id="timer">60</div><textarea id="pauseNote" placeholder="Assumption / risk / proof requirement..."></textarea><div class="btns"><button onclick="startTimer(60)">Start 60s</button><button class="good" onclick="completePause()">Mark pause complete</button><button class="warn" onclick="skipPause()">Skipped / rushed</button></div>`;b=btn('Continue to Commit','next()')}
+ if(st.step==2){body=`<div class="grid3"><input id="cx" placeholder="We are doing X..." value="${esc(st.commit.x)}"><input id="cy" placeholder="because Y..." value="${esc(st.commit.y)}"><input id="cz" placeholder="We will know it worked when Z..." value="${esc(st.commit.z)}"></div><p class="muted">Plain language only. A Supply Marine should be able to repeat it back.</p>`;b=btn('Save Commit','saveCommit()','good')+btn('Choose Action','next()')}
+ if(st.step==3){body=`<div class="choices">${Object.entries(actions).map(([id,txt])=>`<button class="choice ${st.action==id?'on':''}" onclick="choose('${id}')"><b>${id[0].toUpperCase()+id.slice(1)}</b><br><span class="small">${txt.split(': ')[1]}</span></button>`).join('')}</div>`;b=btn('Resolve Action','next()')}
+ if(st.step==4){body=`<h3>${st.action?actions[st.action]:'No action selected'}</h3><p class="muted">Use provisional when it looks better but is not proven. Use validated when the table has evidence.</p><div class="grid2"><button class="secondary" onclick="record('provisional')">Record provisional result</button><button class="good" onclick="record('validated')">Record validated result</button><button class="warn" onclick="record('risk')">Mark risk / false green</button><button onclick="openTruth()">Open ground truth drawer</button></div>`;b=btn('Record / Validate Summary','next()')}
+ if(st.step==5){body=`<h3>Round ${st.round} summary</h3><div class="focus"><b>Commit:</b> We are doing ${esc(st.commit.x||'___')} because ${esc(st.commit.y||'___')}. We will know it worked when ${esc(st.commit.z||'___')}.</div><p class="muted">Check the event record before moving on.</p>`;b=btn(st.round>=5?'Enter Final Decision':'Advance Round','advance()','good')}
+ if(st.step==6){body=`<p class="muted">No more actions. Make the ship/hold decision using validated evidence or documented risk.</p><select id="fd"><option value="">Select decision...</option><option>Ship with evidence</option><option>Hold with documented risk</option><option>Ship without proof and accept false-win risk</option></select><textarea id="fe" placeholder="Evidence or documented risk..."></textarea>`;b=btn('Save Final Decision','saveFinal()','good')+btn('Go to AAR','next()')}
+ if(st.step==7){body=`<h3>AAR snapshot</h3><div class="focus">${zones.map(z=>`${z.name}: ${ze(z.id).length} event(s)`).join('<br>')}<br><br><b>Final:</b> ${esc(st.finalDecision||'Not recorded')}<br><b>Evidence/risk:</b> ${esc(st.finalEvidence||'Not recorded')}</div><div class="grid3"><input placeholder="Real constraint"><input placeholder="Where Pause changed decision"><input placeholder="Doctrine to preserve"></div>`;b=btn('Download AAR','downloadAAR()','good')+btn('Copy AAR','copyAAR()','secondary')}
+ $('pk').textContent='Step '+(st.step+1);$('pt').textContent=steps[st.step];$('ph').textContent=help(st.step);$('pb').textContent=(st.step+1)+' / 8';$('body').innerHTML=body;$('buttons').innerHTML=b}
+function btn(l,fn,cls=''){return `<button class="${cls}" onclick="${fn}">${l}</button>`}
+function next(){if(st.step==1&&!st.pause)return alert('Complete or mark the pause first.');if(st.step==2){saveCommit();if(!st.commit.x)return}if(st.step==3&&!st.action)return alert('Choose an action first.');if(st.step<7){st.step++;add('Step advanced',st.focus,'Moved to '+steps[st.step]+'.')}}
+let tim=null,rem=60;function startTimer(s){clearInterval(tim);rem=s;tim=setInterval(()=>{rem--;let t=$('timer');if(t)t.textContent=rem;if(rem<=0){clearInterval(tim);completePause()}},1000)}function completePause(){st.pause=true;if(st.insight<2)st.insight++;let n=$('pauseNote')?.value||'Pause completed.';add('Processing Pause completed',st.focus,n,'validated')}function skipPause(){st.pause=true;add('Pause skipped / rushed',st.focus,'Human Load increased because the pause was skipped or rushed.','risk','load')}
+function saveCommit(){st.commit={x:$('cx')?.value.trim()||'',y:$('cy')?.value.trim()||'',z:$('cz')?.value.trim()||''};if(!st.commit.x||!st.commit.y||!st.commit.z)return alert('Complete X, Y, and Z.');add('Commit saved',st.focus,`Doing ${st.commit.x} because ${st.commit.y}; proof: ${st.commit.z}.`,'validated')}
+function choose(id){st.action=id;add('Action selected',st.focus,actions[id])}function record(status){if(!st.action)return alert('Choose an action first.');let label=status=='risk'?'False green risk':status=='validated'?'Validated result':'Provisional result';add(label,st.focus,`${label} recorded for ${st.action}.`,status)}function openTruth(){document.querySelector('details').open=true;add('Ground truth drawer opened',st.focus,'Facilitator checked controlled reveal drawer.')}
+function advance(){if(st.round>=5){st.step=6;add('Final Decision entered',st.focus,'Five rounds complete. Final decision only.')}else{st.round++;st.clock=Math.max(0,st.clock-1);st.step=0;st.pause=false;st.commit={x:'',y:'',z:''};st.action='';add('Round advanced',st.focus,'Round '+st.round+' started.')}}function saveFinal(){st.finalDecision=$('fd')?.value||'';st.finalEvidence=$('fe')?.value.trim()||'';if(!st.finalDecision||!st.finalEvidence)return alert('Select a decision and document evidence or risk.');add('Final decision',st.focus,st.finalDecision+': '+st.finalEvidence,st.finalDecision.includes('without proof')?'risk':'validated')}
+function renderZones(){$('zones').innerHTML=zones.map(z=>{let e=ze(z.id),heat=Math.min(100,e.length*25),badges=e.slice(-4).map(x=>`<span class="tag ${x.status=='provisional'?'prov':x.status=='validated'?'val':x.status=='risk'?'risk':'rev'}">${x.status}</span>`).join('');return `<div class="zone ${st.focus==z.id?'sel':''}" onclick="st.focus='${z.id}';add('Zone focus',st.focus,'Table focused on ${z.name}.');"><span class="num">${z.n}</span><h3>${z.name}</h3><div class="tag">${z.visible}</div><p class="detail">${z.detail}</p><div class="heat"><span style="width:${heat}%"></span></div><div class="tags">${badges||'<span class="tag">no activity yet</span>'}</div></div>`}).join('')}
+function renderFocus(){let z=zones.find(x=>x.id==st.focus),e=ze(st.focus);$('focus').innerHTML=`<b>${z.name}</b><br><span class="muted">${z.visible}</span><p class="small">${z.detail}</p><button class="secondary" onclick="add('Pause focus note',st.focus,'Focus zone added to table discussion.')">Add focus note</button><div class="row"><span>Events in zone</span><b>${e.length}</b></div><div class="row"><span>Last event</span><b>${e.length?e[e.length-1].type:'None'}</b></div>`}
+function renderTracks(){$('tracks').innerHTML=Object.entries(tr).map(([id,t])=>`<div class="track"><h4><span>${t.name}</span><span>X ${t.v} ${t.p?'○ '+t.p:''}</span></h4><div class="bar ${id=='load'?'load':''}"><span style="width:${Math.min(100,(t.v+t.p)/6*100)}%"></span></div></div>`).join('')}
+function renderSummary(){let top=[...zones].sort((a,b)=>ze(b.id).length-ze(a.id).length)[0];$('sum').innerHTML=`<div class="row"><span>Most active zone</span><b>${top.name}</b></div><div class="row"><span>Total events</span><b>${st.events.length}</b></div><div class="row"><span>Risk markers</span><b>${st.events.filter(e=>e.status=='risk').length}</b></div><div class="row"><span>Validated markers</span><b>${st.events.filter(e=>e.status=='validated').length}</b></div>`}
+function renderFaults(){$('faults').innerHTML=Object.entries(faults).map(([z,text])=>`<p><b>${zn(z)}:</b> ${text}</p><button onclick="add('Fault revealed','${z}','${text}','reveal')">Reveal</button><button class="good" onclick="add('Fault validated','${z}','Fault validated with table evidence.','validated')">Validate</button>`).join('<hr>')}
+function renderLog(){$('log').innerHTML=st.events.slice().reverse().map(e=>`<div class="event"><strong>R${e.round} / ${zn(e.zone)} / ${e.step}</strong><br>${e.type}: ${esc(e.detail)} <span class="small">[${e.status}]</span></div>`).join('')}
+function aar(){return `# WITL v0.2.5 Activity AAR\n\nFinal decision: ${st.finalDecision||'Not recorded'}\nEvidence/risk: ${st.finalEvidence||'Not recorded'}\n\n## Tracks\n${Object.entries(tr).map(([id,t])=>`- ${t.name}: X ${t.v}, ○ ${t.p}`).join('\n')}\n\n## Event History\n${st.events.map(e=>`- R${e.round} / ${zn(e.zone)} / ${e.step}: ${e.type} — ${e.detail} [${e.status}]`).join('\n')}\n\n## Guardrail\nThis file visualizes decision activity. It does not generate facts, recommend moves, calculate loads, or blame individuals.`}function downloadAAR(){let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([aar()],{type:'text/markdown'}));a.download='witl_v0_2_5_activity_aar.md';a.click()}function copyAAR(){navigator.clipboard.writeText(aar()).then(()=>alert('AAR copied.'))}function resetRun(){if(confirm('Reset local run?'))location.reload()}
+add('Review opened','receiving','v0.2.5 loaded. Event history drives the warehouse activity view.');render();
+</script></body></html>
