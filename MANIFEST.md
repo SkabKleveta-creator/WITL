@@ -1,40 +1,66 @@
-# WITL Digital Facilitator Console v0.2.2 Manifest
+# WITL Digital v0.2.5 Manifest
 
 ## Artifact Identity
 
-**Artifact:** WITL Digital Facilitator Console v0.2.2  
-**Branch:** Digital Facilitator Console  
-**Parent doctrine:** Warehousing in the Loop v0.2.2 tabletop packet  
-**Use:** Side-by-side tabletop + console validation run  
+**Artifact:** WITL Digital v0.2.5 — Guided Warehouse Activity Review  
+**Branch:** Digital Facilitator Console / Guided Activity View  
+**Active entry point:** `index.html`  
+**Packaging:** single-file offline HTML  
+**Use:** local browser review, facilitated tabletop support wargame, activity/AAR capture  
 
-## Manifest
+## Active Files
+
+Required active files:
 
 1. `index.html`
-2. `styles.css`
-3. `app.js`
-4. `scenario_v0_2_2.js`
-5. `README.md`
-6. `MANIFEST.md`
-7. `witl_digital_guidebook_v0_2_2.md`
-8. `witl_pressure_test_premortem_v0_2_2.md`
-9. `witl_build_aar_v0_2_2.md`
-10. `witl_claude_fix_note_v0_2_2.md`
+2. `README.md`
+3. `MANIFEST.md`
 
-## Branch Separation
+The active console is self-contained in `index.html`.
 
-Do not assess this as the Animated Warehouse Sim branch.
+## Doctrine Preserved
 
-The console has:
+The active run rhythm remains:
 
-- No movement loop.
-- No player avatar.
-- No automated fault reveal.
+```text
+Readback → Processing Pause → Commit → Action → Resolve → Record/Validate → Final Decision → AAR
+```
+
+## What v0.2.5 Does
+
+- Guides the facilitator one step at a time.
+- Makes warehouse zones clickable.
+- Records facilitator actions as structured events.
+- Uses event history to drive warehouse activity heat and status badges.
+- Keeps Ground Truth reveal facilitator-controlled.
+- Exports/copies an AAR.
+- Uses plain-language framing to avoid targeting Supply Marines.
+
+## What v0.2.5 Does Not Do
+
 - No AI advice.
-- No load calculator.
-- Manual facilitator controls for reveal, validation, track changes, final decision, and AAR.
+- No generated facts.
+- No real unit data.
+- No load/cube/weight math.
+- No warehouse physics.
+- No player avatar.
+- No movement loop.
+- No digital-twin claim.
+- No WMS claim.
+- No blame framing.
 
 ## Review Protocol
 
-Before assessment, list the ZIP contents, identify the branch, and confirm whether the package matches this manifest.
+Before review, confirm:
 
-If it does not match, stop and report branch mismatch.
+1. The active file is `index.html`.
+2. The version visible in the page is v0.2.5.
+3. The design is a guided activity view, not a simulator.
+4. The Supply Marine framing is visible.
+5. Warehouse activity changes only from facilitator-recorded events.
+
+If the artifact is assessed as a simulator, WMS, load planner, or animated warehouse game, stop and correct the branch classification.
+
+## Next Valid Review
+
+Assess whether the event-history/activity layer improves tabletop facilitation without making the session feel like blame, surveillance, or click-through software.
