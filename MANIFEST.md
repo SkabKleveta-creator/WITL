@@ -8,6 +8,14 @@
 **Packaging:** single-file offline HTML  
 **Use:** local browser review, facilitated tabletop support wargame, activity/AAR capture  
 
+## Deployment Label
+
+Latest intended GitHub Pages deployment label:
+
+**Deploy WITL Digital v0.2.5 Guided Warehouse Activity Review**
+
+This commit exists to replace a misleading cleanup deployment label from the stale v0.2.2 file-removal sequence.
+
 ## Active Files
 
 Required active files:
